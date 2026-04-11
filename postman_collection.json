@@ -1,0 +1,187 @@
+{
+  "info": {
+    "name": "LSTM Text Prediction API",
+    "description": "LAB ASSIGNMENT 5 — Test collection for LSTM FastAPI deployment.\nImport this file into Postman to test all endpoints.",
+    "_postman_id": "lstm-assignment-5-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string",
+      "description": "Change this if your server runs on a different host/port"
+    }
+  ],
+  "item": [
+    {
+      "name": "Root",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/",
+        "description": "Root endpoint — returns API info and available endpoints."
+      },
+      "response": []
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health",
+        "description": "Verify API is running and model is loaded."
+      },
+      "response": [
+        {
+          "name": "Healthy Response",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"status\": \"healthy\",\n  \"model_loaded\": true,\n  \"vocab_size\": 4821,\n  \"sequence_length\": 10,\n  \"load_time\": \"2026-04-10 14:32:11\",\n  \"timestamp\": \"2026-04-10 14:45:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Model Info",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/model-info",
+        "description": "Returns LSTM model architecture and configuration details."
+      },
+      "response": []
+    },
+    {
+      "name": "Predict — AI Topic",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/predict",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"artificial intelligence is\",\n  \"top_k\": 5\n}"
+        },
+        "description": "Predict top-5 next words for 'artificial intelligence is'."
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"seed_text\": \"artificial intelligence is\",\n  \"predictions\": [\n    {\"word\": \"used\",    \"probability\": 0.2341, \"rank\": 1},\n    {\"word\": \"a\",       \"probability\": 0.1823, \"rank\": 2},\n    {\"word\": \"the\",     \"probability\": 0.1204, \"rank\": 3},\n    {\"word\": \"based\",   \"probability\": 0.0934, \"rank\": 4},\n    {\"word\": \"applied\", \"probability\": 0.0712, \"rank\": 5}\n  ],\n  \"top_word\": \"used\",\n  \"top_prob\": 0.2341,\n  \"latency_ms\": 42.3\n}"
+        }
+      ]
+    },
+    {
+      "name": "Predict — ML Topic",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/predict",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"machine learning algorithms\",\n  \"top_k\": 3\n}"
+        },
+        "description": "Predict top-3 next words for 'machine learning algorithms'."
+      },
+      "response": []
+    },
+    {
+      "name": "Predict — Deep Learning",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/predict",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"deep learning neural networks\",\n  \"top_k\": 5\n}"
+        },
+        "description": "Predict next word after 'deep learning neural networks'."
+      },
+      "response": []
+    },
+    {
+      "name": "Generate — Deterministic (low temp)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/generate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"machine learning\",\n  \"num_words\": 10,\n  \"temperature\": 0.5\n}"
+        },
+        "description": "Generate 10 words with low temperature (deterministic output)."
+      },
+      "response": []
+    },
+    {
+      "name": "Generate — Creative (high temp)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/generate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"quantum computing\",\n  \"num_words\": 12,\n  \"temperature\": 1.2\n}"
+        },
+        "description": "Generate 12 words with high temperature (creative/diverse output)."
+      },
+      "response": []
+    },
+    {
+      "name": "Generate — Standard",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/generate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"the human brain\",\n  \"num_words\": 8,\n  \"temperature\": 0.8\n}"
+        },
+        "description": "Generate 8 words with standard temperature."
+      },
+      "response": []
+    },
+    {
+      "name": "Error Test — Empty Seed",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/predict",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"\",\n  \"top_k\": 5\n}"
+        },
+        "description": "Should return 422 Validation Error for empty seed_text."
+      },
+      "response": []
+    },
+    {
+      "name": "Error Test — Invalid top_k",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/predict",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"seed_text\": \"test\",\n  \"top_k\": 100\n}"
+        },
+        "description": "Should return 422 Validation Error — top_k must be <= 20."
+      },
+      "response": []
+    }
+  ]
+}
